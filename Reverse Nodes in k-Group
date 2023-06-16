@@ -1,0 +1,49 @@
+class Solution {
+    public ListNode reverseKGroup(ListNode head, int k) {
+        ListNode dummyHead = new ListNode(0);
+        dummyHead.next = head;
+        ListNode prev = dummyHead;
+        
+        while (head != null) {
+            ListNode tail = prev;
+            
+            // Check if there are enough nodes remaining to reverse
+            for (int i = 0; i < k; i++) {
+                tail = tail.next;
+                if (tail == null) {
+                    return dummyHead.next; // No more nodes to reverse
+                }
+            }
+            
+            ListNode nextGroupHead = tail.next; // Store the head of the next group
+            
+            // Reverse the current group of k nodes
+            ListNode[] reversedNodes = reverseNodes(head, tail);
+            head = reversedNodes[0];
+            tail = reversedNodes[1];
+            
+            // Connect the reversed group to the previous group
+            prev.next = head;
+            tail.next = nextGroupHead;
+            
+            prev = tail;
+            head = nextGroupHead;
+        }
+        
+        return dummyHead.next;
+    }
+    
+    private ListNode[] reverseNodes(ListNode head, ListNode tail) {
+        ListNode prev = tail.next;
+        ListNode current = head;
+        
+        while (prev != tail) {
+            ListNode next = current.next;
+            current.next = prev;
+            prev = current;
+            current = next;
+        }
+        
+        return new ListNode[] { tail, head };
+    }
+}
