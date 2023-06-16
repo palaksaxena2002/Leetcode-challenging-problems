@@ -1,0 +1,49 @@
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+class Solution {
+    public List<Integer> findSubstring(String s, String[] words) {
+        List<Integer> result = new ArrayList<>();
+        if (s == null || s.length() == 0 || words == null || words.length == 0) {
+            return result;
+        }
+        
+        int wordLength = words[0].length();
+        int totalWords = words.length;
+        int windowSize = wordLength * totalWords;
+        
+        Map<String, Integer> wordCountMap = new HashMap<>();
+        for (String word : words) {
+            wordCountMap.put(word, wordCountMap.getOrDefault(word, 0) + 1);
+        }
+        
+        for (int i = 0; i <= s.length() - windowSize; i++) {
+            Map<String, Integer> currentMap = new HashMap<>(wordCountMap);
+            
+            for (int j = 0; j < totalWords; j++) {
+                int wordStartIndex = i + j * wordLength;
+                String currentWord = s.substring(wordStartIndex, wordStartIndex + wordLength);
+                
+                if (currentMap.containsKey(currentWord)) {
+                    int count = currentMap.get(currentWord);
+                    if (count == 1) {
+                        currentMap.remove(currentWord);
+                    } else {
+                        currentMap.put(currentWord, count - 1);
+                    }
+                    
+                    if (currentMap.isEmpty()) {
+                        result.add(i);
+                        break;
+                    }
+                } else {
+                    break;
+                }
+            }
+        }
+        
+        return result;
+    }
+}
